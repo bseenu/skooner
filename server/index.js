@@ -16,7 +16,7 @@ const crypto = getCrypto();
 
 const NODE_ENV = process.env.NODE_ENV;
 const DEBUG_VERBOSE = !!process.env.DEBUG_VERBOSE;
-const ROOT_PATH = process.env.ROOT_PATH || '/';
+const ROOT_PATH = process.env.ROOT_PATH || '';
 const OIDC_CLIENT_ID = process.env.OIDC_CLIENT_ID;
 const OIDC_SECRET = process.env.OIDC_SECRET;
 const OIDC_URL = process.env.OIDC_URL;
@@ -93,7 +93,12 @@ const proxySettings = {
     secure: false,
     changeOrigin: true,
     // remove the root_path for the calls which are being proxied to k8s api server
-    pathRewrite: function (path, req) { return path.replace(`${ROOT_PATH}`, '') },
+    pathRewrite: function (path, req) {
+        if (ROOT_PATH) {
+            return path.replace(`${ROOT_PATH}`, '');
+        }
+        return path;
+    },
     logLevel: 'debug',
     onError,
 };
