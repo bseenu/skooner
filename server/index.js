@@ -92,6 +92,8 @@ const proxySettings = {
     ws: true,
     secure: false,
     changeOrigin: true,
+    // remove the root_path for the calls which are being proxied to k8s api server
+    pathRewrite: function (path, req) { return path.replace(`${ROOT_PATH}`, '') },
     logLevel: 'debug',
     onError,
 };
@@ -107,7 +109,7 @@ if (NODE_ENV !== 'production') app.use(cors());
 app.use(ROOT_PATH, preAuth, express.static('public'));
 app.get(ROOT_PATH + '/oidc', getOidc);
 app.post(ROOT_PATH + '/oidc', postOidc);
-app.use('/*', createProxyMiddleware(proxySettings));
+app.use(ROOT_PATH, createProxyMiddleware(proxySettings));
 app.use(handleErrors);
 
 const port = process.env.SERVER_PORT || 4654;

@@ -7,7 +7,6 @@ import {K8sEvent, Namespace, TODO, Metrics, PersistentVolume, Node, Pod, Cluster
 type DataCallback<T> = (data: T) => void;
 type MetricsCallback = DataCallback<Metrics[]>;
 
-const ROOT_PATH = process.env.REACT_APP_ROOT_PATH || '';
 const configMap = apiFactoryWithNamespace<ConfigMap>('', 'v1', 'configmaps');
 const event = apiFactoryWithNamespace<K8sEvent>('', 'v1', 'events');
 const namespaceService = apiFactory<Namespace>('', 'v1', 'namespaces');
@@ -119,8 +118,8 @@ function metricsFactory() {
 
 function oidcFactory() {
     return {
-        get: () => request(ROOT_PATH + '/oidc'),
-        post: (code: string, redirectUri: string) => post(ROOT_PATH + '/oidc', {code, redirectUri}),
+        get: () => request('/oidc'),
+        post: (code: string, redirectUri: string) => post('/oidc', {code, redirectUri}),
     };
 }
 
